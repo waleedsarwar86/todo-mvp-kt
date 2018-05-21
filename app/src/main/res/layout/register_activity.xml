@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/register_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"
+        android:background="@color/all_primary"
+        android:elevation="@dimen/toolbar_elevation"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/Toolbar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_medium"
+            android:isScrollContainer="true"
+            android:orientation="vertical">
+
+            <android.support.constraint.Group
+                android:id="@+id/register_group_form"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="register_text_view_welcome,register_image_view_email
+                ,register_input_layout_email,register_image_view_password,register_input_layout_password
+                ,register_button_register" />
+
+            <TextView
+                android:id="@+id/register_text_view_welcome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/all_message_welcome"
+                android:textColor="@color/all_primary"
+                android:textSize="@dimen/typography_display1"
+                app:layout_constraintBottom_toTopOf="@id/register_image_view_email"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
+
+            <ImageView
+                android:id="@+id/register_image_view_email"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/text_field_icon_size"
+                android:layout_marginEnd="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
+                android:src="@drawable/all_selector_email"
+                app:layout_constraintEnd_toStartOf="@id/register_input_layout_email"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/register_input_layout_email"
+                tools:ignore="ContentDescription" />
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/register_input_layout_email"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_medium"
+                app:errorEnabled="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/register_image_view_email"
+                app:layout_constraintTop_toBottomOf="@id/register_text_view_welcome">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/register_input_edit_text_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/all_hint_email"
+                    android:maxLines="1" />
+            </android.support.design.widget.TextInputLayout>
+
+
+            <ImageView
+                android:id="@+id/register_image_view_password"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/text_field_icon_size"
+                android:layout_marginEnd="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
+                android:src="@drawable/all_selector_lock"
+                app:layout_constraintEnd_toStartOf="@id/register_input_layout_password"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/register_input_layout_password"
+                tools:ignore="ContentDescription" />
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/register_input_layout_password"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:errorEnabled="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/register_image_view_password"
+                app:layout_constraintTop_toBottomOf="@id/register_input_layout_email"
+                app:passwordToggleEnabled="true">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/register_input_edit_text_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/all_hint_password"
+                    android:inputType="textPassword"
+                    android:maxLines="1" />
+            </android.support.design.widget.TextInputLayout>
+
+
+            <Button
+                android:id="@+id/register_button_register"
+                style="@style/Button"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginBottom="@dimen/margin_medium"
+                android:layout_marginTop="@dimen/margin_normal"
+                android:text="@string/register_action_register"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/register_input_layout_password"
+                app:layout_constraintVertical_bias="0.0" />
+
+
+            <ProgressBar
+                android:id="@+id/register_progress_bar"
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </ScrollView>
+
+</LinearLayout>

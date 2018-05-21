@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="all_primary">#9c27b0</color>
+    <color name="all_primary_dark">#691a99</color>
+    <color name="all_accent">#68efad</color>
+    <color name="all_accent_light">#9effdf</color>
+    <color name="all_text_input_error">#d50000</color>
+
+
+    <color name="all_white">#FFFFFFFF</color>
+    <color name="all_white_30">#4D000000</color>
+
+    <color name="all_black">#000000</color>
+    <color name="all_green_400">#FF66BB6A</color>
+    <color name="all_orange_400">#FFFF5722</color>
+
+
+    <color name="task_priority_low">@color/all_white</color>
+    <color name="task_priority_normal">#FFFFEB3B</color>
+    <color name="task_priority_high">#FFFF6F00</color>
+    <color name="task_priority_crucial">#FFB71C1C</color>
+
+</resources>

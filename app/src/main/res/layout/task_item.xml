@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/listPreferredItemHeight">
+
+    <FrameLayout
+        android:id="@+id/task_delete_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/all_orange_400"
+        android:visibility="invisible">
+
+        <ImageView
+            android:id="@+id/delete_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|end"
+            android:layout_marginEnd="@dimen/margin_medium"
+            android:src="@drawable/all_vector_delete_white"
+            tools:ignore="ContentDescription" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/task_completed_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/all_green_400"
+        android:visibility="invisible">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|start"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:src="@drawable/all_vector_check_white"
+            tools:ignore="ContentDescription" />
+
+    </FrameLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/task_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/all_white"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <View
+            android:id="@+id/task_view_priority"
+            android:layout_width="5dp"
+            android:layout_height="match_parent"
+            android:background="@color/all_black"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+
+        <TextView
+            android:id="@+id/task_textview_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_normal"
+            app:layout_constraintBottom_toTopOf="@id/task_textview_deadline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/task_view_priority"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Task title" />
+
+        <TextView
+            android:id="@+id/task_textview_deadline"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/task_textview_title"
+            tools:text="Deadline" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</FrameLayout>

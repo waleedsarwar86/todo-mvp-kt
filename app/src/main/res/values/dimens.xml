@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <dimen name="toolbar_height">56dp</dimen>
+    <dimen name="toolbar_elevation">3dp</dimen>
+    <dimen name="toolbar_text_size">16sp</dimen>
+    <dimen name="toolbar_title_start_margin">24dp</dimen>
+    <dimen name="toolbar_icon_size">24dp</dimen>
+
+    <dimen name="typography_button">14sp</dimen>
+    <dimen name="typography_caption">12sp</dimen>
+    <dimen name="typography_caption_micro">8sp</dimen>
+    <dimen name="typography_caption_small">9sp</dimen>
+    <dimen name="typography_body1">14sp</dimen>
+    <dimen name="typography_subheading">16sp</dimen>
+    <dimen name="typography_title">20sp</dimen>
+    <dimen name="typography_headline">24sp</dimen>
+    <dimen name="typography_display1">34sp</dimen>
+
+
+    <dimen name="margin_micro">4dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_normal">16dp</dimen>
+    <dimen name="margin_medium">24dp</dimen>
+    <dimen name="margin_large">32dp</dimen>
+    <dimen name="margin_xlarge">48dp</dimen>
+    <dimen name="margin_huge">64dp</dimen>
+
+    <dimen name="padding_micro">4dp</dimen>
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_normal">16dp</dimen>
+    <dimen name="padding_medium">24dp</dimen>
+    <dimen name="padding_large">32dp</dimen>
+    <dimen name="padding_xlarge">48dp</dimen>
+    <dimen name="padding_huge">48dp</dimen>
+
+
+    <dimen name="fab_size">56dp</dimen>
+    <dimen name="fab_elevation_small">4dp</dimen>
+    <dimen name="fab_elevation_normal">6dp</dimen>
+
+
+    <dimen name="text_field_icon_size">48dp</dimen>
+    <dimen name="text_field_icon_padding">12dp</dimen>
+
+
+    <dimen name="add_edit_task_toolbar_height">230dp</dimen>
+
+</resources>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.feature.taskModels.TasksActivity">
+
+    <item
+        android:title="@string/tasks_action_sort"
+        app:showAsAction="never">
+        <menu>
+            <item
+                android:id="@+id/tasks_menu_item_by_date"
+                android:title="@string/tasks_action_by_date" />
+            <item
+                android:id="@+id/tasks_menu_item_by_priority"
+                android:title="@string/tasks_action_by_priority" />
+            <item
+                android:id="@+id/tasks_menu_item_by_name"
+                android:title="@string/tasks_action_by_name" />
+
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/tasks_menu_item_logout"
+        android:title="@string/tasks_action_logout"
+        app:showAsAction="never" />
+
+
+</menu>

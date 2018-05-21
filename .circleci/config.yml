@@ -1,0 +1,292 @@
+version: 2
+
+references:
+
+ ## Cache
+
+  cache_key: &cache_key
+    key: cache-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+
+  restore_cache: &restore_cache
+    restore_cache:
+      <<: *cache_key
+
+  save_cache: &save_cache
+    save_cache:
+      <<: *cache_key
+      paths:
+        - ~/.gradle
+        - ~/.m2
+
+## Workspace
+
+  workspace: &workspace
+    ~/workspace
+
+  attach_debug_workspace: &attach_debug_workspace
+    attach_workspace:
+      at: *workspace
+
+  persist_debug_workspace: &persist_debug_workspace
+      persist_to_workspace:
+        root: *workspace
+        paths:
+          - app/build/outputs/androidTest-results
+          - app/build/outputs/apk
+          - app/build/outputs/code-coverage
+          - app/build/test-results
+
+  attach_release_workspace: &attach_release_workspace
+    attach_workspace:
+      at: *workspace
+
+  persist_release_workspace: &persist_release_workspace
+    persist_to_workspace:
+      root: *workspace
+      paths:
+        - app/build
+
+  attach_firebase_workspace: &attach_firebase_workspace
+    attach_workspace:
+      at: *workspace
+
+  persist_firebase_workspace: &persist_firebase_workspace
+    persist_to_workspace:
+      root: *workspace
+      paths:
+        - firebase
+
+## Docker image configurations
+
+  android_config: &android_config
+    working_directory: *workspace
+    docker:
+      - image: circleci/android:api-27-alpha
+    environment:
+      TERM: dumb
+
+  gcloud_config: &gcloud_config
+    working_directory: *workspace
+    docker:
+      - image: google/cloud-sdk:latest
+    environment:
+      TERM: dumb
+## Keys
+
+  # Android Key Store
+
+  export_android_key: &export_release_keystore
+    run:
+      name: Export Release Keystore
+      command: echo 'export RELEASE_JKS="$RELEASE_JKS"' >> $BASH_ENV
+
+  decode_android_key: &decode_release_keystore
+    run:
+      name: Decode Release keystore
+      command: echo $RELEASE_JKS | base64 -di > keystore/release.jks
+
+  # Google Services
+
+  export_gservices: &export_gservices
+    run:
+      name: Export Google Services
+      command: echo 'export GOOGLE_SERVICES="$GOOGLE_SERVICES"' >> $BASH_ENV
+
+  decode_gservices: &decode_gservices
+    run:
+      name: Decode Google Services
+      command: echo $GOOGLE_SERVICES | base64 -di > app/google-services.json
+
+  # Google Cloud Service
+
+  export_gcloud_service: &export_gcloud_service
+    run:
+      name: Export Google Cloud Service key environment variable
+      command: echo 'export GCLOUD_SERVICE="$GCLOUD_SERVICE"' >> $BASH_ENV
+  decode_gcloud_service: &decode_gcloud_service
+    run:
+      name: Decode Google Cloud credentials
+      command: echo $GCLOUD_SERVICE | base64 -di > ${HOME}/client-secret.json
+
+
+  # Gradle Properties
+
+  export_gradle_properties: &export_gradle_properties
+    run:
+      name: Export Gradle Properties
+      command: echo 'export GRADLE_PROPERTIES="$GRADLE_PROPERTIES"' >> $BASH_ENV
+  decode_gradle_properties: &decode_gradle_properties
+    run:
+      name: Decode Gradle Properties
+      command: echo $GRADLE_PROPERTIES | base64 -di > gradle.properties
+
+
+jobs:
+
+  ## Build debug APK and instrumented test APK
+
+  build_debug:
+    <<: *android_config
+    steps:
+      - checkout
+      - *export_release_keystore
+      - *decode_release_keystore
+      - *export_gservices
+      - *decode_gservices
+      - *export_gradle_properties
+      - *decode_gradle_properties
+      - *restore_cache
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+      - *save_cache
+      - run:
+          name: Gradle build (debug)
+          command: ./gradlew -PciBuild=true :app:assembleDebug :app:assembleAndroidTest
+      - *persist_debug_workspace
+      - store_artifacts:
+                path: app/build/outputs/apk/
+                destination: /apk/
+
+  ## Build release APK
+
+  build_release:
+    <<: *android_config
+    steps:
+      - checkout
+      - *export_release_keystore
+      - *decode_release_keystore
+      - *export_gservices
+      - *decode_gservices
+      - *export_gradle_properties
+      - *decode_gradle_properties
+      - *restore_cache
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+      - *save_cache
+      - run:
+          name: Gradle build (release)
+          command: ./gradlew -PciBuild=true :app:assembleRelease
+      - *persist_release_workspace
+      - store_artifacts:
+          path: app/build/outputs/apk/
+          destination: /apk/
+      - store_artifacts:
+          path: app/build/outputs/mapping/
+          destination: /mapping/
+
+  ## Run unit tests
+
+  test_unit:
+    <<: *android_config
+    steps:
+      - checkout
+      - *export_release_keystore
+      - *decode_release_keystore
+      - *export_gservices
+      - *decode_gservices
+      - *export_gradle_properties
+      - *decode_gradle_properties
+      - *restore_cache
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+      - *save_cache
+      - run:
+          name: Run unit tests
+          command: ./gradlew -PciBuild=true :app:testDebugUnitTest
+      - *persist_debug_workspace
+      - store_artifacts:
+          path: app/build/reports/
+          destination: /reports/
+      - store_test_results:
+          path: app/build/test-results/
+          destination: /test-results/
+
+  ## Run instrumented tests
+
+  test_instrumented:
+    <<: *gcloud_config
+    steps:
+      - *attach_debug_workspace
+      - *export_gcloud_service
+      - *decode_gcloud_service
+      - run:
+          name: Set Google Cloud target project
+          command: gcloud config set project todoapp-50623
+      - run:
+          name: Authenticate with Google Cloud
+          command: gcloud auth activate-service-account circleci@todoapp-50623.iam.gserviceaccount.com --key-file ${HOME}/client-secret.json
+      - run:
+          name: Run instrumented test on Firebase Test Lab
+          command: >
+            gcloud firebase test android run
+            --type instrumentation
+            --app app/build/outputs/apk/debug/app-debug.apk
+            --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+            --device model=sailfish,version=26,locale=en_US,orientation=portrait
+            --environment-variables coverage=true,coverageFile=/sdcard/coverage.ec
+            --test-targets="class com.todo.E2ETestSuite"
+            --directories-to-pull=/sdcard
+            --timeout 20m
+      - run:
+          name: Create directory to store test results
+          command: mkdir firebase
+      - run:
+          name: Download instrumented test results from Firebase Test Lab
+          command: gsutil -m cp -r -U "`gsutil ls gs://test-lab-6ziz6b17b930i-k248c5m1dbji6 | tail -1`*" /root/workspace/firebase/
+      - *persist_firebase_workspace
+      - store_artifacts:
+          path: firebase/
+          destination: /firebase/
+
+  ## Submit JaCoCo coverage report
+
+  report_coverage:
+    <<: *android_config
+    steps:
+      - checkout
+      - *export_release_keystore
+      - *decode_release_keystore
+      - *export_gservices
+      - *decode_gservices
+      - *export_gradle_properties
+      - *decode_gradle_properties
+      - *export_gcloud_service
+      - *decode_gcloud_service
+      - *restore_cache
+      - run:
+          name: Download dependencies
+          command: ./gradlew androidDependencies
+      - *attach_debug_workspace
+      - *attach_firebase_workspace
+      - run:
+          name: Move Firebase coverage report
+          command: mkdir -p app/build/outputs/code-coverage/connected && cp firebase/sailfish-26-en_US-portrait/artifacts/coverage.ec app/build/outputs/code-coverage/connected/coverage.ec
+      - run:
+          name: Generate JaCoCo report
+          command: ./gradlew -PciBuild=true :app:jacocoTestReport
+      - run:
+          name: Upload coverage report to CodeCov
+          command: bash <(curl -s https://codecov.io/bash)
+      - store_artifacts:
+          path: app/build/reports/
+          destination: /reports/
+
+workflows:
+  version: 2
+  workflow:
+    jobs:
+      - build_debug
+      - build_release
+      - test_unit:
+          requires:
+            - build_debug
+      - test_instrumented:
+          requires:
+            - build_debug
+      - report_coverage:
+              requires:
+                - test_unit
+                - test_instrumented
