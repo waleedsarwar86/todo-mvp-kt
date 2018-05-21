@@ -12,13 +12,13 @@ import io.reactivex.Single
 interface RxFirebaseUtils {
 
 
-    fun <T> getSingle(task: Task<T>): Single<T>
+    fun <T> getSingle(task: Task<T>?): Single<T>
 
-    fun getCompletable(task: Task<Void>): Completable
+    fun getCompletable(task: Task<Void>?): Completable
 
 
-    fun getObservable(query: Query): Observable<DataSnapshot>
+    fun getObservable(query: Query?): Observable<DataSnapshot>
 
-    fun getSingle(query: Query): Single<DataSnapshot>
+    fun getSingle(query: Query?): Single<DataSnapshot>
 
 }
